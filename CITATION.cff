@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use AbAffMat, please cite this repository and the relevant upstream work."
+title: "AbAffMat: antibody affinity maturation with Aurabind-style scoring and yeast-display preference learning"
+authors:
+  - family-names: Byrne
+    given-names: Eamon
+repository-code: "https://github.com/eamonbyrne/abaffmat"
+license: "Apache-2.0"
+version: "0.1.0"
+date-released: "2026-05-22"
+keywords:
+  - antibody affinity maturation
+  - antibody design
+  - yeast display
+  - preference learning
+  - protein language models
+  - Aurabind
+  - Protenix

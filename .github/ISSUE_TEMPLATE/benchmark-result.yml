@@ -1,0 +1,60 @@
+name: Benchmark result
+description: Share reproducible benchmark results for a checkpoint
+title: "[Benchmark]: "
+labels: ["benchmark"]
+body:
+  - type: input
+    id: checkpoint
+    attributes:
+      label: Checkpoint
+      description: Checkpoint filename, release URL, or SHA256 checksum.
+      placeholder: abaffmat-gated-pooling-pairwise-logistic-v0.1 / sha256:...
+    validations:
+      required: true
+
+  - type: input
+    id: holdout
+    attributes:
+      label: Holdout manifest
+      description: Exact holdout IDs file used.
+      placeholder: outputs/yeast_display_canonical_test_ids.txt
+    validations:
+      required: true
+
+  - type: input
+    id: ranking_label
+    attributes:
+      label: Ranking label column
+      description: The column used for benchmark ranking metrics.
+      placeholder: label_raw or label_std
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Benchmark command
+      description: Paste the exact command used.
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: results
+    attributes:
+      label: Results summary
+      description: Paste key rows from benchmark_summary.csv or attach the file to the issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Artifacts
+      description: Link or list benchmark_summary.csv, heldout_scores.csv, winner_ranks.csv, config.yaml, and split manifests if available.
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything unusual about the run, hardware, data, checkpoint, or environment.

@@ -1,0 +1,75 @@
+name: Checkpoint submission
+description: Propose a checkpoint for comparison or release
+title: "[Checkpoint]: "
+labels: ["checkpoint"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Checkpoint name
+      placeholder: abaffmat-gated-pooling-pairwise-logistic-v0.1
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Download URL
+      description: GitHub Release, Hugging Face, Zenodo, or another stable artifact URL.
+    validations:
+      required: true
+
+  - type: input
+    id: sha256
+    attributes:
+      label: SHA256 checksum
+      placeholder: sha256:...
+    validations:
+      required: true
+
+  - type: input
+    id: file_size
+    attributes:
+      label: File size
+      placeholder: 1.2 GB
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scoring_head
+    attributes:
+      label: Scoring head
+      options:
+        - GatedPoolingHead
+        - PairformerRefinementHead
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: training_setup
+    attributes:
+      label: Training setup
+      description: Summarize the data, objective, seed, checkpoint initialization, and important flags.
+    validations:
+      required: true
+
+  - type: textarea
+    id: included_files
+    attributes:
+      label: Included artifacts
+      description: List config.yaml, train_dpo.log, split files, benchmark_summary.csv, SHA256SUMS.txt, model card, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: benchmark
+    attributes:
+      label: Benchmark summary
+      description: Paste key benchmark results or attach benchmark_summary.csv.
+
+  - type: textarea
+    id: limitations
+    attributes:
+      label: Known limitations
+      description: Note any caveats, missing artifacts, or expected failure modes.

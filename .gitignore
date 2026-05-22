@@ -1,0 +1,46 @@
+# Python cache / build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local environments / machine-specific files
+.DS_Store
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+
+# Notebook / generated docs
+.ipynb_checkpoints/
+CONTRIBUTING.html
+CONTRIBUTING_files/
+README.html
+README_files/
+
+# Project-generated data and outputs
+data/Covid/Covid_design/
+esm_embeddings/
+outputs/*
+!outputs/.gitkeep
+release_data/
+data/AIntibody/
+
+# Training / inference artifacts
+wandb/
+*.log
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.pkl
+*.npz

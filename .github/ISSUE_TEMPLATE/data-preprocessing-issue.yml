@@ -1,0 +1,50 @@
+name: Data or preprocessing issue
+description: Report a problem with yeast-display data curation, labels, splits, or JSON generation
+title: "[Data]: "
+labels: ["data", "preprocessing"]
+body:
+  - type: input
+    id: data_source
+    attributes:
+      label: Data source
+      description: Source URL, release name, or local filename.
+      placeholder: data/Covid/mock_affinity_maturation_yeast_display_ngs.csv
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Preprocessing command
+      description: Paste the exact command used.
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: What happened? Include traceback, rejected-row examples, or unexpected counts.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: curation_summary
+    attributes:
+      label: Curation summary
+      description: Include accepted/rejected row counts, split counts, label summaries, or audit snippets if available.
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, package install method, and relevant dependency versions.

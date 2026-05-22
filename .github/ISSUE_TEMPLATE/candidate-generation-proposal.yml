@@ -1,0 +1,49 @@
+name: Candidate generation proposal
+description: Propose or discuss a candidate-pool generation or scoring workflow
+title: "[Candidate generation]: "
+labels: ["candidate-generation"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What design task or comparison should this candidate pool support?
+    validations:
+      required: true
+
+  - type: input
+    id: input_data
+    attributes:
+      label: Input data
+      description: Canonical table, parental sequence source, or fixed candidate pool.
+      placeholder: outputs/yeast_display_canonical.csv
+    validations:
+      required: true
+
+  - type: input
+    id: target_cdrs
+    attributes:
+      label: Target CDRs
+      placeholder: H1,H2
+
+  - type: textarea
+    id: method
+    attributes:
+      label: Proposed method
+      description: Describe sampling, recombination, filtering, constraints, or scoring changes.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Reproducibility plan
+      description: Include seed, fixed candidate CSV path, JSON output path, checkpoint comparisons, and artifact-sharing plan.
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation or benchmark plan
+      description: How should the proposed pool be evaluated or compared?
