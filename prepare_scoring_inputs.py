@@ -34,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--input_csv_path",
-        default="./data/Covid/Covid_design.csv",
+        default="./data/Covid/Aurabind_Covid_design_inference_samples.csv",
         help="Path to the input CSV containing heavy/light antibody sequences.",
     )
     parser.add_argument(

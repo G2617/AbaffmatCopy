@@ -8,7 +8,7 @@ export CUDA_VISIBLE_DEVICES=0
 export PYTHONPATH=.
 export TRIANGLE_MULTIPLICATIVE=torch
 
-INPUT_CSV_PATH="${1:-./data/Covid/Covid_design.csv}"
+INPUT_CSV_PATH="${1:-./data/Covid/Aurabind_Covid_design_inference_samples.csv}"
 SCORE_INPUT_JSON_PATH="${2:-$(dirname "$INPUT_CSV_PATH")/$(basename "$INPUT_CSV_PATH" .csv)}"
 
 python prepare_scoring_inputs.py \
