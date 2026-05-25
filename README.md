@@ -2,9 +2,9 @@
 
 AbAffMat aims to be an open-source reproduction and extension of AurekaBio's Aurabind architecture for *in silico* antibody affinity maturation.
 
-The original Aurabind inference framework was obtained from [github.com/AurekaBio/Aureka-AIntibody-Challenges](https://github.com/AurekaBio/Aureka-AIntibody-Challenges).
+The original Aurabind inference framework was obtained from [github.com/AurekaBio/Aureka-AIntibody-Challenges](https://github.com/AurekaBio/Aureka-AIntibody-Challenges). AurekaBio was a part of the AIntibody Challenges ([website](https://www.aintibody.org/the-challenges/), [paper](https://www.nature.com/articles/s41587-024-02469-9)) in 2025. (Other references to "AIntibody" on GitHub are [here](https://github.com/search?q=AIntibody&type=code).)
 
-Aurabind uses the Pairformer module from [Protenix](https://github.com/bytedance/Protenix) as an encoder trunk to generate structure- and sequence-aware representations of a protein-protein interaction (here, an antibody-antigen complex), then applies a scoring head that compresses those representations to a single binding-rank score.
+Aurabind uses the Pairformer module from [Protenix](https://www.biorxiv.org/content/10.64898/2026.02.05.703733v3) as an encoder trunk to generate structure- and sequence-aware representations of a protein-protein interaction (here, an antibody-antigen complex), then applies a scoring head that compresses those representations to a single binding-rank score.
 The original Aurabind code included two scoring heads: a gated-pooling head with lightweight MLPs (now `GatedPoolingHead`, previously `AffinityHead`) and a head with an additional Pairformer refinement module (now `PairformerRefinementHead`, previously `BinderHead`).
 
 ## Model Architecture
@@ -13,10 +13,9 @@ The original Aurabind code included two scoring heads: a gated-pooling head with
 
 AbAffMat scores antibody-antigen complexes from antigen, heavy-chain, and light-chain sequences. Yeast-display NGS enrichment is converted into preference pairs for scoring-head fine-tuning.
 
-AurekaBio used this architecture to produce predictions for the AIntibody Challenges ([www.aintibody.org/the-challenges/](https://www.aintibody.org/the-challenges/)).
-Challenge 1 is an *in silico* antibody affinity maturation task aimed at designing antibody CDRs with improved affinity for the RBD of SARS-CoV-2 and favorable developability properties, based on NGS datasets of the sorting outputs of an affinity maturation campaign with diversity in LCDR1-2, LCDR3 and HCDR1-2, as described by [Teixeira et al. 2022](https://www.aintibody.org/wp-content/uploads/2024/10/Simultaneous-affinity-maturation-and-developability-enhancement-using-natural-liability-free-CDRs.pdf).
+[AIntibody Challenge 1](https://www.aintibody.org/the-challenges/) is an *in silico* antibody affinity maturation task aimed at designing antibody CDRs with improved affinity for the RBD of SARS-CoV-2 and favorable developability properties, based on NGS datasets of the sorting outputs of an affinity maturation campaign with diversity in LCDR1-2, LCDR3 and HCDR1-2, as described by [Teixeira et al. 2022](https://www.aintibody.org/wp-content/uploads/2024/10/Simultaneous-affinity-maturation-and-developability-enhancement-using-natural-liability-free-CDRs.pdf).
 
-The AIntibody Challenge 1 CSV used here was obtained from [github.com/alexstj0hn/AIntibody](https://github.com/alexstj0hn/AIntibody/blob/main/data/AIntibody_COMPETITION_1.csv).
+The AIntibody Challenge 1 data CSV used here was obtained from [github.com/alexstj0hn/AIntibody](https://github.com/alexstj0hn/AIntibody/blob/main/data/AIntibody_COMPETITION_1.csv).
 This is not the official AIntibody Challenge data source, and the CSV has not yet been verified against the official competition data expected with publication of the competition results. Until that comparison is complete, please treat these data and any derived checkpoints or benchmarks as provisional.
 The redundancy of paired heavy- and light-chain sequences in the sorted population approximates post-selection enrichment, which is expected to correlate, albeit noisily, with affinity to the antigen (here, SARS-CoV-2 RBD).
 
@@ -420,7 +419,7 @@ Validation logs include:
 This makes it easier to see whether aggregate gains are coming from only one subset
 of the training distribution.
 
-The default preference objective is reference-anchored DPO:
+The default preference objective is reference-anchored DPO, adapted from [Direct Preference Optimization](https://arxiv.org/abs/2305.18290):
 
 ```bash
   --dpo_loss_type "anchored_dpo"
@@ -428,7 +427,8 @@ The default preference objective is reference-anchored DPO:
 
 `anchored_dpo` optimizes the model to prefer enriched sequences over less-enriched
 sequences while anchoring those preferences to the score margins from a frozen
-reference model.
+reference model. In this repo, that adapts the DPO idea to scalar
+antibody-complex scores rather than language-model token probabilities.
 
 For direct ranking training without reference-model margins, use:
 
@@ -438,7 +438,10 @@ For direct ranking training without reference-model margins, use:
 ```
 
 `pairwise_logistic` optimizes `score(chosen) > score(rejected)` directly and skips
-reference-model forward passes during training/evaluation.
+reference-model forward passes during training/evaluation. This is a pairwise
+ranking objective: it uses within-group ordering of yeast-display labels without
+assuming calibrated affinity values, similar in spirit to [RankNet](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/)-style
+pairwise learning-to-rank losses.
 
 The first two public AbAffMat checkpoint bundles use `pairwise_logistic` with the
 `GatedPoolingHead`: `abaffmat-gated-pooling-pairwise-logistic-no-teacher-v0.1`
@@ -579,7 +582,7 @@ protocol smoke test rather than a final estimate of model quality.
 
 The original Aurabind repository included a fixed set of 10,000 COVID design sequences for inference. In this repo, that file is available at `data/Covid/Aurabind_Covid_design_inference_samples.csv` and can be used as a shared candidate pool for reproducing the upstream example or comparing checkpoints on the same designs.
 
-Sample an Aurabind-style candidate pool for a design task by fixing the parental framework/non-target CDRs and recombining observed CDR patterns plus frequent single-site substitutions from the curated table:
+AbAffMat provides a script to sample a candidate pool of sequences for a design task by fixing the parental framework/non-target CDRs and recombining observed CDR patterns plus frequent single-site substitutions from the curated table:
 
 ```bash
 python sample_candidate_pool.py \
@@ -632,4 +635,11 @@ The scoring run writes `scores/scores.pkl` under a timestamped output directory.
 
 If you use AbAffMat code, checkpoints, data-processing scripts, or benchmark outputs, please cite this repository and the relevant upstream work. Citation metadata are provided in `CITATION.cff`.
 
-Please also cite the original resources that AbAffMat builds on, including AurekaBio/Aurabind, Protenix, OpenFold where relevant, and the AIntibody Challenge / Teixeira et al. yeast-display dataset.
+Relevant upstream work includes:
+
+- AurekaBio/Aurabind and the AIntibody Challenge resources.
+- [Protenix-v1](https://www.biorxiv.org/content/10.64898/2026.02.05.703733v3), for the Protenix Pairformer trunk used by Aurabind/AbAffMat.
+- [OpenFold](https://www.nature.com/articles/s41587-024-02290-4), where relevant for OpenFold-derived local modules.
+- [Teixeira et al. 2022](https://www.aintibody.org/wp-content/uploads/2024/10/Simultaneous-affinity-maturation-and-developability-enhancement-using-natural-liability-free-CDRs.pdf), for the yeast-display affinity maturation dataset.
+- [Direct Preference Optimization](https://arxiv.org/abs/2305.18290), for the DPO-style anchored preference objective.
+- [RankNet / pairwise learning-to-rank](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/), for the pairwise-logistic ranking objective.
