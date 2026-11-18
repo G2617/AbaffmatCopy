@@ -328,6 +328,26 @@ def _deepspeed_evo_attn(
 
 
 @torch.jit.ignore
+def _torch_attention(
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    biases: List[torch.Tensor],
+) -> torch.Tensor:
+    attn_bias = None
+    for bias in biases:
+        attn_bias = bias if attn_bias is None else attn_bias + bias
+    return nn.functional.scaled_dot_product_attention(
+        q,
+        k,
+        v,
+        attn_mask=attn_bias,
+        dropout_p=0.0,
+        scale=1.0,
+    )
+
+
+@torch.jit.ignore
 def _tri_attention(
     q: torch.Tensor,
     k: torch.Tensor,
@@ -531,7 +551,7 @@ class Attention(nn.Module):
             )[0]
             o = o.transpose(-2, -3)
         else:
-            o = _attention(q, k, v, biases)
+            o = _torch_attention(q, k, v, biases)
             o = o.transpose(-2, -3)
 
         o = self._wrap_up(o, q_x)
