@@ -29,7 +29,7 @@ README.html
 README_files/
 
 # Project-generated data and outputs
-data/Covid/Covid_design/
+data/Covid/
 esm_embeddings/
 outputs/*
 !outputs/.gitkeep
