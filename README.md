@@ -593,7 +593,3 @@ torchrun --standalone --nproc_per_node=1 runners/score_complex.py \
 - [Teixeira 等人 2022](https://www.aintibody.org/wp-content/uploads/2024/10/Simultaneous-affinity-maturation-and-developability-enhancement-using-natural-liability-free-CDRs.pdf)，用于酵母展示亲和力成熟数据集。
 - [直接偏好优化（Direct Preference Optimization）](https://arxiv.org/abs/2305.18290)，用于 DPO 风格的锚定偏好目标。
 - [RankNet / 成对学习排序](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/)，用于成对逻辑回归排序目标。
-
----
-
-> 本内容由 Coze AI 生成，请遵循相关法律法规及《人工智能生成合成内容标识办法》使用与传播。
