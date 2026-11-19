@@ -153,6 +153,14 @@ conda activate abaffmat
 bash predict.sh
 ```
 
+在 Windows Git Bash 下，脚本会直接启动单进程推理并使用 PyTorch 注意力实现，避免 `torchrun` 的 libuv 限制。首次可用少量样本验证环境：
+
+```bash
+MAX_SAMPLES=1 bash predict.sh
+```
+
+省略 `MAX_SAMPLES` 时会处理输入中的全部样本。
+
 如需对不同的候选库 CSV 打分，可在命令行中传入该文件：
 
 ```bash
