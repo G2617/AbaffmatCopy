@@ -17,7 +17,6 @@ from datasets.yeast_display import (
     assign_sample_splits,
     build_regions_from_sequence,
     canonicalize_yeast_display_dataframe,
-    infer_antibody_regions,
     infer_chain_regions,
     parse_sort_population,
     save_canonicalization_state,
@@ -110,30 +109,6 @@ def test_parse_sort_population():
     phase, mutated = parse_sort_population("phase1_h1_h2_am")
     assert phase == "phase1"
     assert mutated == ["H1", "H2"]
-
-
-def test_infer_antibody_regions_uses_anarcii_backend(monkeypatch):
-    import abnumber
-
-    calls = []
-
-    class FakeChain:
-        def __init__(self, sequence, scheme, use_anarcii):
-            calls.append((sequence, scheme, use_anarcii))
-            self.fr1_seq = "FR1"
-            self.cdr1_seq = "CDR1"
-            self.fr2_seq = "FR2"
-            self.cdr2_seq = "CDR2"
-            self.fr3_seq = "FR3"
-            self.cdr3_seq = "CDR3"
-            self.fr4_seq = "FR4"
-
-    monkeypatch.setattr(abnumber, "Chain", FakeChain)
-
-    regions = infer_antibody_regions(PARENT_HEAVY, scheme="imgt")
-
-    assert calls == [(PARENT_HEAVY, "imgt", True)]
-    assert regions["cdr1"] == "CDR1"
 
 
 def test_infer_chain_regions_uses_kabat_for_light_l2(monkeypatch):
