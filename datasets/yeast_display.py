@@ -105,17 +105,18 @@ def infer_antibody_regions(sequence: str, scheme: str = "imgt") -> dict[str, str
     except ImportError as exc:
         raise RuntimeError(
             "abnumber is required to infer antibody CDR/framework regions when they are "
-            "not fully provided in the input CSV. Install both 'abnumber' and its "
-            "numbering backend 'anarci' in your environment."
+            "not fully provided in the input CSV. Install 'abnumber' and its "
+            "ANARCII numbering backend in your environment."
         ) from exc
 
     try:
-        chain = Chain(sequence, scheme=scheme)
+        chain = Chain(sequence, scheme=scheme, use_anarcii=True)
     except ModuleNotFoundError as exc:
-        if exc.name == "anarci":
+        if exc.name == "anarcii":
             raise RuntimeError(
-                "abnumber is installed, but its numbering backend 'anarci' is "
-                "missing. Install it with `pip install anarci` and rerun "
+                "abnumber is installed, but its ANARCII numbering backend is "
+                "missing. Reinstall the project dependencies with "
+                "`python -m pip install -e .` and rerun "
                 "prepare_yeast_display_data.py."
             ) from exc
         raise
