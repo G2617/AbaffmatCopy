@@ -1,4 +1,4 @@
-# AbAffMat（抗体亲和力成熟）
+# AbAffMat（抗体亲和力成熟）复现实验
 
 AbAffMat 旨在成为 AurekaBio 的 Aurabind 架构在 *in silico*（计算机模拟）抗体亲和力成熟方面的开源复现与扩展。
 
