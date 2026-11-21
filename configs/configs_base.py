@@ -23,13 +23,15 @@ from configs.extend_types import (
     ValueMaybeNone,
 )
 
+from pathlib import Path
+
 basic_configs = {
-    "project": RequiredValue(str),
-    "run_name": RequiredValue(str),
-    "base_dir": RequiredValue(str),
+    "project": "abaffmat-dpo",
+    "run_name": "abaffmat_dpo",
+    "base_dir": "outputs/dpo_runs",
     # training
-    "eval_interval": RequiredValue(int),
-    "log_interval": RequiredValue(int),
+    "eval_interval": 10,
+    "log_interval": 1,
     "checkpoint_interval": -1,
     "eval_first": False,  # run evaluate() before training steps
     "iters_to_accumulate": 1,
@@ -65,7 +67,7 @@ basic_configs = {
     "score_sample_ids_path": "",
     "predict_json_path": "",
     "raw_yeast_csv_path": "",
-    "canonical_output_path": "",
+    "canonical_output_path": (Path.home() / "Desktop").as_posix() + "/abaffmat-main/data/AIntibody/COMP1_canonical/yeast_display_COMP1_canonical.csv",
     "json_output_dir": "",
     "antigen_name": "covid19_rbd",
     "antigen_sequence": "",
@@ -88,7 +90,7 @@ basic_configs = {
     "pair_sampling_strategy": "hard_negative",
     "max_pairs_per_group": 128,
     "max_pairs_per_group_by_key": "",
-    "max_eval_batches": -1,
+    "max_eval_batches": 10,
     "eval_log_interval": 10,
     "train_split_path": "",
     "val_split_path": "",
@@ -121,7 +123,7 @@ optim_configs = {
     "lr": 0.0018,
     "lr_scheduler": "af3",
     "warmup_steps": 10,
-    "max_steps": RequiredValue(int),
+    "max_steps": 20,
     "min_lr_ratio": 0.1,
     "decay_every_n_steps": 50000,
     "grad_clip_norm": 10.0,

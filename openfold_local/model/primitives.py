@@ -326,6 +326,48 @@ def _deepspeed_evo_attn(
     o = o.reshape(orig_shape)
     return o
 
+def _attention(
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    biases: List[torch.Tensor],
+) -> torch.Tensor:
+    """
+    Native PyTorch attention implementation.
+
+    q, k, v:
+        [*, H, Q/K, C_hidden]
+
+    biases:
+        Tensors broadcastable to [*, H, Q, K]
+    """
+    input_dtype = v.dtype
+
+    # Compute attention logits in float32 for numerical stability.
+    with torch.amp.autocast(device_type=q.device.type, enabled=False):
+        q_float = q.float()
+        k_float = k.float()
+
+        # [*, H, Q, C] @ [*, H, C, K]
+        # -> [*, H, Q, K]
+        attn_weights = torch.matmul(
+            q_float,
+            k_float.transpose(-1, -2),
+        )
+
+        # Add all attention bias terms.
+        for bias in biases:
+            attn_weights = attn_weights + bias.float()
+
+        # Normalize over keys.
+        attn_weights = torch.softmax(attn_weights, dim=-1)
+
+    # [*, H, Q, K] @ [*, H, K, C]
+    # -> [*, H, Q, C]
+    attn_weights = attn_weights.to(dtype=input_dtype)
+    output = torch.matmul(attn_weights, v)
+
+    return output
 
 @torch.jit.ignore
 def _tri_attention(

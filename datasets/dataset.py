@@ -183,7 +183,7 @@ class DistilledDataset(Dataset):
             #     except Exception as e:
             #         logger.warning(f"Failed to save cache {cache_path}: {e}")
         except Exception as e:
-            logger.warning(f"Failed to process sample {index}: {e}")
+            logger.exception(f"Failed to process sample {index}") # logger.warning(f"Failed to process sample {index}: {e}")
             return None
 
         return data
